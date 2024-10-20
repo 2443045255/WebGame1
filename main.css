@@ -16,6 +16,13 @@
     display: none !important;
 }
 
+.version-info{
+    position: fixed;
+    left: 0;
+    top: 0;
+    background: rgba(0, 0, 0, 0.1);
+    z-index: 11;
+}
 
 #GameMain {
     width: 100vw;
@@ -47,7 +54,7 @@
     width: var(--playerDefaultWidth);
     height: var(--playerDefaultWidth);
     border-radius: 50%;
-    background: black;
+    background: rgba(0, 0, 0, 0.5);
     position: absolute;
     z-index: 10;
 }
