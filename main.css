@@ -12,11 +12,11 @@
     user-select: none;
 }
 
-.noshow{
+.noshow {
     display: none !important;
 }
 
-.version-info{
+.version-info {
     position: fixed;
     left: 0;
     top: 0;
@@ -30,7 +30,7 @@
     overflow: hidden;
 }
 
-.GameWall{
+.GameWall {
     background: url(images/stone.png);
     background-size: 64px;
     image-rendering: pixelated;
@@ -57,7 +57,26 @@
     background: rgba(0, 0, 0, 0.5);
     position: absolute;
     z-index: 10;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
-.player{
+
+.local-player::after {
+    content: "";
+    display: block;
+    height: 170%;
+    width: 100px;
+    /* top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%); */
+    background: url(images/攻击指示器.png) no-repeat;
+    background-size: cover;
+    background-position: center center;
+    opacity: .7;
+}
+
+.player {
     box-shadow: 0px 0px 10px white;
 }

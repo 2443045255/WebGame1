@@ -58,27 +58,31 @@ var S = false
 var D = false
 var NowKey = "a"
 var StopMove
+
+function DaXie(value){
+    return value.toUpperCase()
+}
 function 添加玩家移动事件() {
     localPlayerPos.X = parseInt(localPlayer.style.left)
     localPlayerPos.Y = parseInt(localPlayer.style.top)
     localPlayer = document.getElementById("local-player")
     document.addEventListener("keydown", function () {
-        if (event.key == "a") {
+        if (DaXie(event.key) == "A") {
             if (!A) {
                 A = true
                 X轴移动("right")
             }
-        } else if (event.key == "d") {
+        } else if (DaXie(event.key) == "D") {
             if (!D) {
                 D = true
                 X轴移动()
             }
-        } else if (event.key == "w") {
+        } else if (DaXie(event.key) == "W") {
             if (!W) {
                 W = true
                 Y轴移动("up")
             }
-        } else if (event.key == "s") {
+        } else if (DaXie(event.key) == "S") {
             if (!S) {
                 S = true
                 Y轴移动()
@@ -87,22 +91,22 @@ function 添加玩家移动事件() {
     })
 
     document.addEventListener("keyup", function () {
-        if (event.key == "a") {
+        if (DaXie(event.key) == "A") {
             A = false
-            NowKey = event.key
-            停止移动(event.key)
-        } else if (event.key == "d") {
+            NowKey = DaXie(event.key)
+            停止移动(DaXie(event.key))
+        } else if (DaXie(event.key) == "D") {
             D = false
-            NowKey = event.key
-            停止移动(event.key)
-        } else if (event.key == "w") {
+            NowKey = DaXie(event.key)
+            停止移动(DaXie(event.key))
+        } else if (DaXie(event.key) == "W") {
             W = false
-            NowKey = event.key
-            停止移动(event.key)
-        } else if (event.key == "s") {
+            NowKey = DaXie(event.key)
+            停止移动(DaXie(event.key))
+        } else if (DaXie(event.key) == "S") {
             S = false
-            NowKey = event.key
-            停止移动(event.key)
+            NowKey = DaXie(event.key)
+            停止移动(DaXie(event.key))
         }
     })
 }
@@ -143,19 +147,19 @@ function 停止移动(value) {
             if (localPlayerMoveSpeed > localPlayerMoveSpeedMin) {
                 localPlayerMoveSpeed--
                 switch (NowKey) {
-                    case "a":
+                    case "A":
                         localPlayerPos.X = localPlayerPos.X - localPlayerMoveSpeed / 100
                         localPlayer.style.left = localPlayerPos.X + "px"
                         break;
-                    case "d":
+                    case "D":
                         localPlayerPos.X = localPlayerPos.X + localPlayerMoveSpeed / 100
                         localPlayer.style.left = localPlayerPos.X + "px"
                         break;
-                    case "w":
+                    case "W":
                         localPlayerPos.Y = localPlayerPos.Y - localPlayerMoveSpeed / 100
                         localPlayer.style.top = localPlayerPos.Y + "px"
                         break;
-                    case "s":
+                    case "S":
                         localPlayerPos.Y = localPlayerPos.Y + localPlayerMoveSpeed / 100
                         localPlayer.style.top = localPlayerPos.Y + "px"
                         break;
@@ -169,16 +173,16 @@ function 停止移动(value) {
         }, 0);
     }
     switch (value) {
-        case "a":
+        case "A":
             !D ? clearInterval(localPlayerMoveX) : X轴移动()
             break;
-        case "d":
+        case "D":
             !A ? clearInterval(localPlayerMoveX) : X轴移动("right")
             break;
-        case "w":
+        case "W":
             !S ? clearInterval(localPlayerMoveY) : Y轴移动()
             break;
-        case "s":
+        case "S":
             !W ? clearInterval(localPlayerMoveY) : Y轴移动("up")
             break;
         default:
@@ -196,4 +200,5 @@ function 移动相机() {
 
 document.addEventListener("contextmenu", function (e) {
     e.preventDefault();
+    //拦截网页右键
 })
