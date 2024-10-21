@@ -1,5 +1,6 @@
 window.onload = function () {
     创建本地玩家()
+    鼠标脱出暂停()
 }
 
 var gameBody = document.getElementById("gameBody")
@@ -56,10 +57,10 @@ var W = false
 var A = false
 var S = false
 var D = false
-var NowKey = "a"
+var NowKey = "A"
 var StopMove
 
-function DaXie(value){
+function DaXie(value) {
     return value.toUpperCase()
 }
 function 添加玩家移动事件() {
@@ -70,21 +71,25 @@ function 添加玩家移动事件() {
         if (DaXie(event.key) == "A") {
             if (!A) {
                 A = true
+                NowKey = DaXie(event.key)
                 X轴移动("right")
             }
         } else if (DaXie(event.key) == "D") {
             if (!D) {
                 D = true
+                NowKey = DaXie(event.key)
                 X轴移动()
             }
         } else if (DaXie(event.key) == "W") {
             if (!W) {
                 W = true
+                NowKey = DaXie(event.key)
                 Y轴移动("up")
             }
         } else if (DaXie(event.key) == "S") {
             if (!S) {
                 S = true
+                NowKey = DaXie(event.key)
                 Y轴移动()
             }
         }
@@ -93,19 +98,15 @@ function 添加玩家移动事件() {
     document.addEventListener("keyup", function () {
         if (DaXie(event.key) == "A") {
             A = false
-            NowKey = DaXie(event.key)
             停止移动(DaXie(event.key))
         } else if (DaXie(event.key) == "D") {
             D = false
-            NowKey = DaXie(event.key)
             停止移动(DaXie(event.key))
         } else if (DaXie(event.key) == "W") {
             W = false
-            NowKey = DaXie(event.key)
             停止移动(DaXie(event.key))
         } else if (DaXie(event.key) == "S") {
             S = false
-            NowKey = DaXie(event.key)
             停止移动(DaXie(event.key))
         }
     })
@@ -202,3 +203,11 @@ document.addEventListener("contextmenu", function (e) {
     e.preventDefault();
     //拦截网页右键
 })
+
+function 鼠标脱出暂停() {
+    document.addEventListener("mouseleave", function () {
+        停止移动(NowKey)
+    })
+    document.addEventListener("keydown") = null
+    document.addEventListener("keyup") = null
+}

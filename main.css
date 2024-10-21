@@ -12,6 +12,10 @@
     user-select: none;
 }
 
+div {
+    transform: translateZ(0);
+}
+
 .noshow {
     display: none !important;
 }
@@ -50,13 +54,12 @@
 }
 
 .local-player {
-    display: block;
     width: var(--playerDefaultWidth);
     height: var(--playerDefaultWidth);
     border-radius: 50%;
     background: rgba(0, 0, 0, 0.5);
     position: absolute;
-    z-index: 10;
+    z-index: 100 !important;
 
     display: flex;
     align-items: center;
