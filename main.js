@@ -17,8 +17,8 @@ function 创建本地玩家() {
     添加玩家移动事件()
     移动相机()
 }
-var localPlayerPos = {}
-Object.defineProperties(localPlayerPos, {
+var localPlayerInfo = {}
+Object.defineProperties(localPlayerInfo, {
     X: {
         get: function () {
             return X
@@ -44,86 +44,102 @@ Object.defineProperties(localPlayerPos, {
                 Y = MapHeight - localPlayer.offsetHeight
             }
         }
+    },
+    Speed: {
+        get: function () {
+            return Speed
+        },
+        set: function (value) {
+            Speed = value;
+            显示速度(Speed)
+        }
     }
 });
 // var localPlayerX = 0
 // var localPlayerY = 0
 var localPlayerMoveX
 var localPlayerMoveY
-const localPlayerMoveSpeedMax = 99
+const localPlayerMoveSpeedMax = 100
 const localPlayerMoveSpeedMin = 10
-var localPlayerMoveSpeed = localPlayerMoveSpeedMin
+localPlayerInfo.Speed = localPlayerMoveSpeedMin
 var W = false
 var A = false
 var S = false
 var D = false
 var NowKey = "A"
 var StopMove
+var UserMouseLeave = false
 
 function DaXie(value) {
     return value.toUpperCase()
 }
-function 添加玩家移动事件() {
-    localPlayerPos.X = parseInt(localPlayer.style.left)
-    localPlayerPos.Y = parseInt(localPlayer.style.top)
-    localPlayer = document.getElementById("local-player")
-    document.addEventListener("keydown", function () {
+
+function 键盘按下() {
+    if (event.key) {
+        NowKey = DaXie(event.key)
         if (DaXie(event.key) == "A") {
             if (!A) {
                 A = true
-                NowKey = DaXie(event.key)
                 X轴移动("right")
             }
         } else if (DaXie(event.key) == "D") {
             if (!D) {
                 D = true
-                NowKey = DaXie(event.key)
                 X轴移动()
             }
         } else if (DaXie(event.key) == "W") {
             if (!W) {
                 W = true
-                NowKey = DaXie(event.key)
                 Y轴移动("up")
             }
         } else if (DaXie(event.key) == "S") {
             if (!S) {
                 S = true
-                NowKey = DaXie(event.key)
                 Y轴移动()
             }
         }
-    })
+    }
+}
 
-    document.addEventListener("keyup", function () {
-        if (DaXie(event.key) == "A") {
-            A = false
-            停止移动(DaXie(event.key))
-        } else if (DaXie(event.key) == "D") {
-            D = false
-            停止移动(DaXie(event.key))
-        } else if (DaXie(event.key) == "W") {
-            W = false
-            停止移动(DaXie(event.key))
-        } else if (DaXie(event.key) == "S") {
-            S = false
-            停止移动(DaXie(event.key))
-        }
-    })
+function 键盘抬起() {
+    NowKey = DaXie(event.key)
+    if (DaXie(event.key) == "A") {
+        A = false
+    } else if (DaXie(event.key) == "D") {
+        D = false
+    } else if (DaXie(event.key) == "W") {
+        W = false
+    } else if (DaXie(event.key) == "S") {
+        S = false
+    }
+    停止移动(DaXie(event.key))
+}
+
+function 添加玩家移动事件() {
+    localPlayerInfo.X = parseInt(localPlayer.style.left)
+    localPlayerInfo.Y = parseInt(localPlayer.style.top)
+    localPlayer = document.getElementById("local-player")
+    document.addEventListener("keydown", 键盘按下, true)
+
+    document.addEventListener("keyup", 键盘抬起, true)
 }
 
 function X轴移动(value) {
     clearInterval(StopMove)
     clearInterval(localPlayerMoveX)
     localPlayerMoveX = setInterval(() => {
-        if (value == "right") {
-            localPlayerPos.X = localPlayerPos.X - localPlayerMoveSpeed / 100
+        if (!UserMouseLeave) {
+            if (value == "right") {
+                localPlayerInfo.X = localPlayerInfo.X - localPlayerInfo.Speed / 100
+            } else {
+                localPlayerInfo.X = localPlayerInfo.X + localPlayerInfo.Speed / 100
+            }
+            if (localPlayerInfo.Speed < localPlayerMoveSpeedMax) { localPlayerInfo.Speed++ }
+            localPlayer.style.left = localPlayerInfo.X + "px"
+            移动相机()
         } else {
-            localPlayerPos.X = localPlayerPos.X + localPlayerMoveSpeed / 100
+            停止移动(null)
         }
-        if (localPlayerMoveSpeed < localPlayerMoveSpeedMax) { localPlayerMoveSpeed++ }
-        localPlayer.style.left = localPlayerPos.X + "px"
-        移动相机()
     }, 0);
 }
 
@@ -131,44 +147,61 @@ function Y轴移动(value) {
     clearInterval(StopMove)
     clearInterval(localPlayerMoveY)
     localPlayerMoveY = setInterval(() => {
-        if (value == "up") {
-            localPlayerPos.Y = localPlayerPos.Y - localPlayerMoveSpeed / 100
+        if (!UserMouseLeave) {
+            if (value == "up") {
+                localPlayerInfo.Y = localPlayerInfo.Y - localPlayerInfo.Speed / 100
+            } else {
+                localPlayerInfo.Y = localPlayerInfo.Y + localPlayerInfo.Speed / 100
+            }
+            if (localPlayerInfo.Speed < localPlayerMoveSpeedMax) { localPlayerInfo.Speed++ }
+            localPlayer.style.top = localPlayerInfo.Y + "px"
+            移动相机()
         } else {
-            localPlayerPos.Y = localPlayerPos.Y + localPlayerMoveSpeed / 100
+            停止移动(null)
         }
-        if (localPlayerMoveSpeed < localPlayerMoveSpeedMax) { localPlayerMoveSpeed++ }
-        localPlayer.style.top = localPlayerPos.Y + "px"
-        移动相机()
     }, 0);
 }
 
 function 停止移动(value) {
+    clearInterval(StopMove)
+    if (UserMouseLeave) {
+        A = false
+        D = false
+        W = false
+        D = false
+        clearInterval(localPlayerMoveX)
+        clearInterval(localPlayerMoveY)
+        localPlayerInfo.Speed = localPlayerMoveSpeedMin
+        显示速度()
+    }
     if (!W && !A && !S && !D) {
         StopMove = setInterval(() => {
-            if (localPlayerMoveSpeed > localPlayerMoveSpeedMin) {
-                localPlayerMoveSpeed--
+            if (localPlayerInfo.Speed > localPlayerMoveSpeedMin) {
+                localPlayerInfo.Speed--
                 switch (NowKey) {
                     case "A":
-                        localPlayerPos.X = localPlayerPos.X - localPlayerMoveSpeed / 100
-                        localPlayer.style.left = localPlayerPos.X + "px"
+                        localPlayerInfo.X = localPlayerInfo.X - localPlayerInfo.Speed / 100
+                        localPlayer.style.left = localPlayerInfo.X + "px"
                         break;
                     case "D":
-                        localPlayerPos.X = localPlayerPos.X + localPlayerMoveSpeed / 100
-                        localPlayer.style.left = localPlayerPos.X + "px"
+                        localPlayerInfo.X = localPlayerInfo.X + localPlayerInfo.Speed / 100
+                        localPlayer.style.left = localPlayerInfo.X + "px"
                         break;
                     case "W":
-                        localPlayerPos.Y = localPlayerPos.Y - localPlayerMoveSpeed / 100
-                        localPlayer.style.top = localPlayerPos.Y + "px"
+                        localPlayerInfo.Y = localPlayerInfo.Y - localPlayerInfo.Speed / 100
+                        localPlayer.style.top = localPlayerInfo.Y + "px"
                         break;
                     case "S":
-                        localPlayerPos.Y = localPlayerPos.Y + localPlayerMoveSpeed / 100
-                        localPlayer.style.top = localPlayerPos.Y + "px"
+                        localPlayerInfo.Y = localPlayerInfo.Y + localPlayerInfo.Speed / 100
+                        localPlayer.style.top = localPlayerInfo.Y + "px"
                         break;
                     default:
                         break;
                 }
-            } else if (localPlayerMoveSpeed == localPlayerMoveSpeedMin) {
+                显示速度()
+            } else {
                 clearInterval(StopMove)
+                return
             }
             移动相机()
         }, 0);
@@ -190,13 +223,22 @@ function 停止移动(value) {
             break;
     }
 }
+
 var userWidth = window.innerWidth
 var userHight = window.innerHeight
 var GameMain = document.getElementById("GameMain")
 
 function 移动相机() {
-    GameMain.scrollLeft = localPlayerPos.X - userWidth / 2 + 100 + 17.5
-    GameMain.scrollTop = localPlayerPos.Y - userHight / 2 + 100 + 17.5
+    GameMain.scrollLeft = localPlayerInfo.X - userWidth / 2 + 100 + 17.5
+    GameMain.scrollTop = localPlayerInfo.Y - userHight / 2 + 100 + 17.5
+}
+
+function 显示速度(value) {
+    var SpeedInfo = document.querySelector(".version-info p:nth-child(2)")
+    if(value){
+        SpeedInfo.innerText = `当前速度:${value}`
+    }
+    
 }
 
 document.addEventListener("contextmenu", function (e) {
@@ -205,9 +247,13 @@ document.addEventListener("contextmenu", function (e) {
 })
 
 function 鼠标脱出暂停() {
-    document.addEventListener("mouseleave", function () {
-        停止移动(NowKey)
-    })
-    document.addEventListener("keydown") = null
-    document.addEventListener("keyup") = null
+    document.onmouseout = function () {
+        UserMouseLeave = true
+        document.removeEventListener("keydown", 键盘按下, true)
+        document.removeEventListener("keyup", 键盘抬起, true)
+    }
+    document.onmouseover = function () {
+        UserMouseLeave = false
+        添加玩家移动事件()
+    }
 }
